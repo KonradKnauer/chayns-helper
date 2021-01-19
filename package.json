@@ -46,7 +46,7 @@
       "optional": false
     },
     "chayns-logger": {
-      "optional": false
+      "optional": true
     },
     "chayns-components": {
       "optional": false

@@ -1,5 +1,4 @@
-// @ts-expect-error
-import logger from 'chayns-logger';
+import loggingConfig from '../../utils/requireChaynsLogger';
 import colorLog from '../../utils/colorLog';
 import stringToRegex, { regexRegex } from '../../utils/stringToRegex';
 import ChaynsError, { ChaynsErrorObject } from './ChaynsError';
@@ -49,17 +48,18 @@ export async function getLogFunctionByStatus(
     if (levelKey && logConfig.get(levelKey)) {
         switch (logConfig.get(levelKey)) {
             case LogLevel.info:
-                return logger.info;
+                return loggingConfig.logger.info;
             case LogLevel.warning:
-                return logger.warning;
+                return loggingConfig.logger.warning;
             case LogLevel.error:
-                return logger.error;
+                return loggingConfig.logger.error;
             case LogLevel.critical:
-                return logger.critical;
+                return loggingConfig.logger.critical;
             case LogLevel.none:
                 return console.warn;
             default:
-                console.error(...colorLog({ '[HttpRequest]': 'color: #aaaaaa' }),
+                console.error(
+                    ...colorLog({ '[HttpRequest]': 'color: #aaaaaa' }),
                     `LogLevel '${logConfig.get(levelKey)}' for '${levelKey}' is invalid. Please use a valid log level.`
                 );
                 return defaultFunction;
@@ -96,7 +96,7 @@ export const jsonResolve = async (
     try {
         resolve(await response.json());
     } catch (err) {
-        logger.warning({
+        loggingConfig.logger.warning({
             message: `[HttpRequest] Getting JSON body failed on Status ${status} on ${processName}`,
             data: { internalRequestGuid }
         }, err);
@@ -116,7 +116,7 @@ export const blobResolve = async (
     try {
         resolve(await response.blob());
     } catch (err) {
-        logger.warning({
+        loggingConfig.logger.warning({
             message: `[HttpRequest] Getting BLOB body failed on Status ${status} on ${processName}`,
             data: { internalRequestGuid }
         }, err);
@@ -136,7 +136,7 @@ export const textResolve = async (
     try {
         resolve(await response.text());
     } catch (err) {
-        logger.warning({
+        loggingConfig.logger.warning({
             message: `[HttpRequest] Getting text body failed on Status ${status} on ${processName}`,
             data: { internalRequestGuid }
         }, err);
@@ -159,7 +159,7 @@ export const objectResolve = async (
             data: await response.json()
         });
     } catch (err) {
-        logger.warning({
+        loggingConfig.logger.warning({
             message: `[HttpRequest] Getting JSON body for Object failed on Status ${status} on ${processName}`,
             data: { internalRequestGuid }
         }, err);
@@ -227,7 +227,7 @@ export async function resolveWithHandler(
                 return true;
         }
     }
-    logger.warning({
+    loggingConfig.logger.warning({
         message: `[HttpRequest] Invalid handler '${handler}' on status ${status} on ${processName}`,
         data: {
             handler,

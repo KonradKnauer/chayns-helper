@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-// @ts-expect-error
-import logger from 'chayns-logger';
+import logConfig from '../utils/requireChaynsLogger';
 import shallowEqual from '../functions/shallowEqual';
 import WsClient, { WebsocketConditions } from '../other/WsClient';
 import WebSocketClient from "../other/WsClient";
@@ -107,7 +106,7 @@ const useWebsocketService = (
                             { serviceName, conditions, clientGroup }
                         );
                     }
-                    logger.info({
+                    logConfig.logger.info({
                         message: '[Websocket] client registered',
                         data: {
                             data,
@@ -123,14 +122,14 @@ const useWebsocketService = (
                     // eslint-disable-next-line no-console
                     console.error(
                         ...colorLog({ [`[Websocket<${serviceName}>]`]: 'color: #aaaaaa' }), 'register error', data);
-                    logger.error({
+                    logConfig.logger.error({
                         message: '[Websocket] registration failed',
                         data: {
                             conditions,
                             serviceName,
                             clientGroup
                         }
-                    }, data);
+                    }, <Error><unknown>data);
                 });
 
                 // WS client default: WS connection closed
@@ -142,7 +141,7 @@ const useWebsocketService = (
                             'connection closed', data
                         );
                     }
-                    logger.info({
+                    logConfig.logger.info({
                         message: '[Websocket] connection closed',
                         data: {
                             data,
@@ -157,14 +156,14 @@ const useWebsocketService = (
                 webSocketClient.on('ERROR', (error) => {
                     // eslint-disable-next-line no-console
                     console.error(...colorLog({ [`[Websocket<${serviceName}>]`]: 'color: #aaaaaa' }), 'error', error);
-                    logger.warning({
+                    logConfig.logger.warning({
                         message: '[Websocket] error',
                         data: {
                             conditions,
                             serviceName,
                             clientGroup
                         }
-                    }, error);
+                    }, <Error><unknown>error);
                 });
             }
         }

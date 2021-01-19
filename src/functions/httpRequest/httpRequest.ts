@@ -1,6 +1,5 @@
 import isNullOrWhiteSpace from '../../utils/isNullOrWhiteSpace';
-// @ts-expect-error
-import logger from 'chayns-logger';
+import loggerConfig from '../../utils/requireChaynsLogger';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 import colorLog from '../../utils/colorLog';
 import generateUUID from '../generateUid';
@@ -278,7 +277,7 @@ export function httpRequest(
 
             const resolve = (value?: any) => {
                 globalResolve(value);
-                logger.info({
+                loggerConfig.logger.info({
                     message: `[HttpRequest] ${processName} resolved`,
                     data: {
                         resolveValue: value,
@@ -332,7 +331,7 @@ export function httpRequest(
                 }
             } catch (err) {
 // HANDLE FAILED TO FETCH START
-                const failedToFetchLog = await getLogFunctionByStatus(1, logConfig, logger.warning);
+                const failedToFetchLog = await getLogFunctionByStatus(1, logConfig, loggerConfig.logger.warning);
                 failedToFetchLog({
                     message: `[HttpRequest] Failed to fetch on ${processName}`,
                     data: {
@@ -479,9 +478,9 @@ export function httpRequest(
                 req_guid: requestUid
             };
 
-            let defaultLog = logger.error;
-            if (status < 400) defaultLog = logger.info;
-            if (status === 401) defaultLog = logger.warning;
+            let defaultLog = loggerConfig.logger.error;
+            if (status < 400) defaultLog = loggerConfig.logger.info;
+            if (status === 401) defaultLog = loggerConfig.logger.warning;
             const log = await getLogFunctionByStatus(status, logConfig, defaultLog, responseBody);
 
             const chaynsErrorObject = await ChaynsError.getChaynsErrorObject(responseBody);
